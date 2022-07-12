@@ -1,0 +1,12 @@
+1- Defina o número de vértices do seu poligono;
+2- na grade preencha os valores de X e Y (pode usar [TAB] para pular entre os campos);
+3- precione o botão calcula;
+4- no memo aparecerá os resultados
+5- O botão "CG: (0,0)" transforma todas as coordenadas do polígono para que o centroide fique em (0,0).
+
+Obs:
+
+ -Use o aperte o botão esquerdo e arraste o mouse para a função PAN;
+ -Duplo clique faz com que a imagem seja colocada numa escala ideal na tela (autoscale);
+ -Use a roda do mouse para dar zoom + ou - ; 
+

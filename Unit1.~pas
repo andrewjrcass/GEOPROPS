@@ -1,0 +1,527 @@
+unit Unit1;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, Spin, Grids, Polig, ExtCtrls, Buttons, Math, ComCtrls,
+  Menus, UAbout;
+const
+   crMyDragCursor = 5;
+   PIDiv180 = 0.017453292519943295769236907684886;
+
+
+
+
+
+
+
+
+   
+
+type
+  TForm1 = class(TForm)
+    Panel1: TPanel;
+    Grid: TStringGrid;
+    Splitter1: TSplitter;
+    Panel2: TPanel;
+    Label1: TLabel;
+    SpinEdit1: TSpinEdit;
+    Button1: TButton;
+    Panel3: TPanel;
+    memo: TMemo;
+    Splitter2: TSplitter;
+    View: TPaintBox;
+    ControlBar1: TControlBar;
+    dlgSave: TSaveDialog;
+    dlgOpen: TOpenDialog;
+    MainMenu1: TMainMenu;
+    Arquivo1: TMenuItem;
+    Abre1: TMenuItem;
+    Salva1: TMenuItem;
+    Sobre1: TMenuItem;
+    Vista1: TMenuItem;
+    Zomm1: TMenuItem;
+    Zoom1: TMenuItem;
+    ZoomFit1: TMenuItem;
+    Panel4: TPanel;
+    SpeedButton3: TSpeedButton;
+    SpeedButton2: TSpeedButton;
+    SpeedButton4: TSpeedButton;
+    SpeedButton1: TSpeedButton;
+    SpeedButton10: TSpeedButton;
+    SpeedButton7: TSpeedButton;
+    SpeedButton6: TSpeedButton;
+    SpeedButton5: TSpeedButton;
+    Panel5: TPanel;
+    SpeedButton9: TSpeedButton;
+    SpeedButton8: TSpeedButton;
+    lblScale: TLabel;
+    SpeedButton11: TSpeedButton;
+    procedure SpinEdit1Change(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
+    procedure ViewPaint(Sender: TObject);
+    procedure SpeedButton1Click(Sender: TObject);
+    procedure SpeedButton4Click(Sender: TObject);
+    procedure SpeedButton2Click(Sender: TObject);
+    procedure SpeedButton3Click(Sender: TObject);
+    procedure SpeedButton5Click(Sender: TObject);
+    procedure SpeedButton6Click(Sender: TObject);
+    procedure SpeedButton7Click(Sender: TObject);
+    procedure SpeedButton8Click(Sender: TObject);
+    procedure SpeedButton9Click(Sender: TObject);
+    procedure ViewMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure ViewMouseMove(Sender: TObject; Shift: TShiftState; X,
+      Y: Integer);
+    procedure SpeedButton10Click(Sender: TObject);
+    procedure ViewDblClick(Sender: TObject);
+    procedure ViewMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure Sobre1Click(Sender: TObject);
+    procedure Zomm1Click(Sender: TObject);
+    procedure Zoom1Click(Sender: TObject);
+    procedure ZoomFit1Click(Sender: TObject);
+    procedure Abre1Click(Sender: TObject);
+    procedure Salva1Click(Sender: TObject);
+    procedure SpeedButton11Click(Sender: TObject);
+    procedure FormMouseWheel(Sender: TObject; Shift: TShiftState;
+      WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
+    procedure ViewClick(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+    procedure PaintShape;
+    procedure Calcula;
+    procedure BestFit;
+    procedure SetBase;
+    procedure Scale_Up;
+    procedure Scale_Down;
+    procedure ClearView;
+    procedure ShowData;
+    procedure ShowResults;
+    procedure GetFromGrid;
+  end;
+
+var
+  Form1: TForm1;
+  Pontos: array of TRPoints;
+
+  //scale: Double;
+  dx, dy: Integer;
+  Geo: TGeoData;
+  pMax, pMin: tRPoints;
+  fStartDrag, fEndDrag, Base: TPoint;
+  Drawing, Draging: Boolean;
+  Scale: Real;
+implementation
+
+{$R *.dfm}
+{$R Cursor.res}
+
+procedure TForm1.SpinEdit1Change(Sender: TObject);
+begin
+  Grid.RowCount:= SpinEdit1.Value+1;
+end;
+
+procedure TForm1.Button1Click(Sender: TObject);
+begin
+  ShowData;
+  Calcula;
+  ShowResults;
+  Drawing:= True;
+  //BestFit;
+  PaintShape;
+end;
+
+procedure TForm1.FormActivate(Sender: TObject);
+begin
+    Grid.Cells[0,0]:= 'Point';
+    Grid.Cells[1,0]:= 'X';
+    Grid.Cells[2,0]:= 'Y';
+    Scale:= 1;
+    dx:= 1; dy:= 1;
+    Drawing:= False;
+    Base:= Point(0,0);
+    Grid.ColWidths[0]:=40;
+    Screen.Cursors[crMyDragCursor]:= LoadCursor(HInstance,'CURSORDRAG');
+end;
+
+procedure TForm1.PaintShape;
+var
+i, nPontos: Integer;
+iPontos: array of TPoint;
+MaxP, MinP: TPoint;
+
+  procedure DrawPolig;
+  var
+   i: Integer;
+  begin
+   View.Canvas.Pen.Color:= clWhite;
+   View.Canvas.Brush.Color := clTeal;
+   View.Canvas.Brush.Style:= bsFDiagonal;
+   if Draging then
+     View.Canvas.Polyline(iPontos)
+   else
+      View.Canvas.Polygon(iPontos);
+
+   View.Canvas.Font.Color:= View.Canvas.Pen.Color;
+   View.Canvas.Font.Size:= 10;
+   View.Canvas.Font.Style:= [];
+
+
+   For i:= 0 to nPontos -1 do begin
+       View.Canvas.TextOut(iPontos[i].X+3, iPontos[i].Y, 'P('+IntToStr(i+1)+')');
+   end;
+   //RotatePoints(Points)
+   //ScalePoints(Points)
+   View.Canvas.Polyline([Point(Round(Geo.C.X*Scale)+5+dx,-Round(Geo.C.Y*Scale)+dy),
+                       Point(Round(Geo.C.X*Scale)-5+dx,-Round(Geo.C.Y*Scale)+dy)]);
+   View.Canvas.Polyline([Point(Round(Geo.C.X*Scale)+dx, -Round(Geo.C.Y*Scale)+5+dy),
+                       Point(Round(Geo.C.X*Scale)+dx, -Round(Geo.C.Y*Scale)-5+dy)]);
+
+
+
+   View.Canvas.Font.Style:= [fsBold];
+   View.Canvas.TextOut(Round(Geo.C.X*Scale)+dx+3, -Round(Geo.C.Y*Scale)+dy+3,
+                      'CG: '+ FormatFloat('(0.00',Geo.C.X)+', '+FormatFloat('0.00)',Geo.C.Y));
+  end;
+
+
+begin
+  if not Drawing then Exit;
+
+  nPontos:= Length(Pontos);
+  SetLength(iPontos, nPontos+1);
+  lblScale.Caption:= 'Scale:= '+FormatFloat('0.00',Scale);
+
+  For i:= 0 to nPontos -1 do begin
+      iPontos[i].X:=+Round(Pontos[i].X*Scale)+dx;
+      iPontos[i].Y:=-Round(Pontos[i].Y*Scale)+dy;
+  end;
+   iPontos[i]:= ipontos[0];
+
+  ClearView;
+
+  DrawPolig;
+end;
+
+procedure TForm1.ViewPaint(Sender: TObject);
+begin
+ if not Drawing then
+    ClearView
+ else
+    PaintShape;
+end;
+
+procedure TForm1.SpeedButton1Click(Sender: TObject);
+begin
+  Dec(dx,5);
+  PaintShape;
+end;
+
+procedure TForm1.SpeedButton4Click(Sender: TObject);
+begin
+  Inc(dx,5);
+  PaintShape;
+end;
+
+procedure TForm1.SpeedButton2Click(Sender: TObject);
+begin
+ Dec(dy,5);
+ PaintShape;
+end;
+
+procedure TForm1.SpeedButton3Click(Sender: TObject);
+begin
+ Inc(dy,5);
+ PaintShape;
+end;
+
+procedure TForm1.SpeedButton5Click(Sender: TObject);
+begin
+Scale_Up;
+end;
+
+procedure TForm1.SpeedButton6Click(Sender: TObject);
+begin
+Scale_Down
+end;
+
+procedure TForm1.SpeedButton7Click(Sender: TObject);
+begin
+  Scale:= 1;
+  SetBase;
+  PaintShape;
+end;
+
+procedure TForm1.SpeedButton8Click(Sender: TObject);
+var
+  f: TextFile;
+  i,n: Integer;
+begin
+ i:=0;
+ if dlgOpen.Execute then begin
+    AssignFile(f, dlgOpen.FileName);
+    Reset(f);
+     while not Eof(f) do begin
+       SetLength(Pontos, i+1);
+       Readln(f, Pontos[i].X, Pontos[i].Y);
+       inc(i);
+     end;
+     
+    CloseFile(f);
+    SpinEdit1.Value:= Length(Pontos);
+    for i:= 1 to Length(Pontos) do begin
+        Grid.Cells[1,i]:= FloatToStr(Pontos[i-1].X);
+        Grid.Cells[2,i]:= FloatToStr(Pontos[i-1].Y);
+    end;
+
+    Scale:= 1;
+    ShowData;
+    Calcula;
+    Drawing:= True;
+    BestFit;
+    PaintShape;
+    ShowResults;
+ end;
+end;
+
+procedure TForm1.Calcula;
+begin
+ Geo:= PolygonGeo(Pontos);
+end;
+
+procedure TForm1.SpeedButton9Click(Sender: TObject);
+var
+f: TextFile;
+i: Integer;
+begin
+  if Length(Pontos) >= 3 then
+     if dlgSave.Execute then begin
+        AssignFile(f, dlgSave.FileName);
+        Rewrite(f);
+         For i:= 0 to Length(Pontos)-1 do begin
+             Writeln(f, Pontos[i].X, ' ',Pontos[i].Y);
+         end;
+        CloseFile(f);
+     end;
+end;
+
+procedure TForm1.ViewMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  if Shift = [ssLeft] then begin
+     fStartDrag:= Point(X,Y);
+     Screen.Cursor:= crMyDragCursor;
+  end;
+end;
+
+procedure TForm1.ViewMouseMove(Sender: TObject; Shift: TShiftState; X,
+  Y: Integer);
+ var
+  i: Integer; 
+begin
+  Base:= Point(X,Y);
+  Form1.SetFocus;
+  if (Shift = [ssLeft]) then begin
+     Draging:= True;
+     fEndDrag:= Point(X,Y);
+     dx:= dx + Round((fEndDrag.X-fStartDrag.X));
+     dy:= dy + Round((fEndDrag.y-fStartDrag.y));
+     fStartDrag:= fEndDrag;
+     PaintShape;
+  end else begin
+    if Length(Pontos) > 0 then begin
+     for i:= 0 to Length(Pontos)-1 do begin
+      Pontos[i].X:= Pontos[i].X-X;
+      Pontos[i].Y:= Pontos[i].Y-Y;
+     end;
+  end;;
+end;
+
+procedure TForm1.BestFit;
+var
+  v, vX, vY: Real;
+begin
+ if ((Geo.fMax.X-Geo.fMin.X)<>0) or ((Geo.fMax.Y-Geo.fMin.Y)<>0) then begin
+  dx:= 1; dy:= 1;
+  Vx:= (View.Width-20)/(Geo.fMax.X-Geo.fMin.X);
+  Vy:= (View.Height-5)/(Geo.fMax.Y-Geo.fMin.Y);
+  v:= Min(vx,vy);
+  Scale:= v;
+  SetBase;
+ end;
+end;
+
+procedure TForm1.SetBase;
+begin
+ dx:= Round(Abs(Geo.fMin.X*Scale));
+ dy:= Round(Abs(Geo.fMax.Y*Scale))+1;
+end;
+
+procedure TForm1.SpeedButton10Click(Sender: TObject);
+begin
+  BestFit;
+  PaintShape;
+end;
+
+procedure TForm1.Scale_Down;
+begin
+  Scale:= Scale*0.9;
+  PaintShape;
+end;
+
+procedure TForm1.Scale_Up;
+begin
+  Scale:= Scale*1.1;
+  PaintShape;
+end;
+
+procedure TForm1.ViewDblClick(Sender: TObject);
+begin
+  BestFit;
+end;
+
+procedure TForm1.ClearView;
+begin
+  View.Canvas.Pen.Color:= clBlack;
+  View.Canvas.Brush.Style:= bsSolid;
+  View.Canvas.Brush.Color := clBlack;
+  View.Canvas.FillRect(View.Canvas.ClipRect);
+end;
+
+procedure TForm1.ViewMouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+   Screen.Cursor:= crDefault;
+   Draging:= False;
+   PaintShape;
+end;
+
+procedure TForm1.Sobre1Click(Sender: TObject);
+begin
+   frmAbout.ShowModal;
+end;
+
+
+
+procedure TForm1.ShowData;
+var
+  i, nPontos: Word;
+begin
+ SetLength(Pontos, SpinEdit1.Value);
+ nPontos:= SpinEdit1.Value;
+ memo.Lines.Add('****** Begin ******');
+ For i:= 0 to nPontos-1 do begin
+     Pontos[i].X:= StrToFloat(Grid.Cells[1,i+1]);
+     Pontos[i].Y:= StrToFloat(Grid.Cells[2,i+1]);
+     Grid.Cells[0,i+1]:= IntToStr(i+1);
+     memo.Lines.Add('Read: '+Grid.Cells[1,i+1]+', '+Grid.Cells[2,i+1]+ ' of unit');
+     PMax.X:= Max(Pontos[i].X, pMax.X);
+     PMax.Y:= Max(Pontos[i].Y, pMax.Y);
+     PMin.X:= Min(Pontos[i].X, pMin.X);
+     PMin.Y:= Min(Pontos[i].Y, pMin.Y);
+end;
+end;
+
+procedure TForm1.ShowResults;
+begin
+ memo.Lines.Add('****** Results ******');
+ with Geo do begin
+      memo.Lines.Add('Area: '+FloatToStr(Area)+ ' (unit^2)');
+      memo.Lines.Add('Perimeter: '+FloatToStr(P)+ ' (unit)');
+      memo.Lines.Add(Format('CG: (%8.8n;%8.8n) of unit',[C.X,C.Y]));
+      memo.Lines.Add('Jx: ' + FloatToStr(Ix)+' unit^4');
+      memo.Lines.Add('Jy: ' + FloatToStr(Iy)+' unit^4');
+      memo.Lines.Add('Ixx(cg): ' + FloatToStr(Ixcg)+' unit^4');
+      memo.Lines.Add('Iyy(cg): ' + FloatToStr(Iycg)+' unit^4');
+      memo.Lines.Add(Format('Izz(cg): %n unit^4',[Ixcg+Iycg]));
+      memo.Lines.Add(Format('Ixy: %8.8n unit^4',[Ixy]));
+      memo.Lines.Add('rx: ' + FloatToStr(rx)+' unit');
+      memo.Lines.Add('ry: ' + FloatToStr(ry)+' unit');
+      memo.Lines.Add('WxInf: ' + FloatToStr(WxInf)+ ' unit^3');
+      memo.Lines.Add('WxSup: ' + FloatToStr(WxSup)+ ' unit^3');
+      memo.Lines.Add('WyInf: ' + FloatToStr(WyInf)+ ' unit^3');
+      memo.Lines.Add('WySup: ' + FloatToStr(WySup)+ ' unit^3');
+      memo.Lines.Add('WxMax: ' + FloatToStr(WxMax)+ ' unit^3');
+      memo.Lines.Add('WyMax: ' + FloatToStr(WyMax)+ ' unit^3');
+   end;
+ memo.Lines.Add('****** End ******');
+end;
+
+procedure TForm1.GetFromGrid;
+begin
+
+end;
+
+procedure TForm1.Zomm1Click(Sender: TObject);
+begin
+  SpeedButton5Click(Self);
+end;
+
+procedure TForm1.Zoom1Click(Sender: TObject);
+begin
+ SpeedButton6Click(Self);
+end;
+
+procedure TForm1.ZoomFit1Click(Sender: TObject);
+begin
+ SpeedButton10Click(Self);
+end;
+
+procedure TForm1.Abre1Click(Sender: TObject);
+begin
+ SpeedButton8Click(Self);
+end;
+
+procedure TForm1.Salva1Click(Sender: TObject);
+begin
+ SpeedButton9Click(Self);
+end;
+
+procedure TForm1.SpeedButton11Click(Sender: TObject);
+var
+   i: Integer;
+begin
+ if Length(Pontos) > 0 then begin
+  for i:= 0 to Length(Pontos)-1 do begin
+    Pontos[i].X:= Pontos[i].X-Geo.C.X;
+    Pontos[i].Y:= Pontos[i].Y-Geo.C.Y;
+  end;
+
+  for i:= 1 to Length(Pontos) do begin
+      Grid.Cells[1,i]:= FloatToStr(Pontos[i-1].X);
+      Grid.Cells[2,i]:= FloatToStr(Pontos[i-1].Y);
+  end;
+    Scale:= 1;
+    ShowData;
+    Calcula;
+    Drawing:= True;
+    BestFit;
+    PaintShape;
+    ShowResults;
+ end;
+end;
+
+procedure TForm1.FormMouseWheel(Sender: TObject; Shift: TShiftState;
+  WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
+var
+  c: TControl;
+begin
+ if Panel3.Focused then begin
+ if WheelDelta > 0 then
+    Scale_Up
+ else Scale_Down;
+ Handled:= True;
+ end else Handled:= False;
+end;
+
+procedure TForm1.ViewClick(Sender: TObject);
+begin
+Panel3.SetFocus;
+end;
+
+end.

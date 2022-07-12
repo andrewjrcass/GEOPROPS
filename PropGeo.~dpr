@@ -1,0 +1,15 @@
+program PropGeo;
+
+uses
+  Forms,
+  Unit1 in 'Unit1.pas' {Form1},
+  Polig in 'Polig.pas';
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.Title := 'Propriedade Geometricas';
+  Application.CreateForm(TForm1, Form1);
+  Application.Run;
+end.

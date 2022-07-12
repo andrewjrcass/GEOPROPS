@@ -1,0 +1,522 @@
+object Form1: TForm1
+  Left = 593
+  Top = 195
+  Width = 1039
+  Height = 547
+  Caption = 'Geometric Properties of Irregular Shapes'
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  Menu = MainMenu1
+  OldCreateOrder = False
+  OnActivate = FormActivate
+  OnMouseWheel = FormMouseWheel
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Splitter1: TSplitter
+    Left = 225
+    Top = 0
+    Width = 8
+    Height = 488
+    Color = clMedGray
+    ParentColor = False
+  end
+  object Panel1: TPanel
+    Left = 0
+    Top = 0
+    Width = 225
+    Height = 488
+    Align = alLeft
+    BevelOuter = bvNone
+    TabOrder = 0
+    object Grid: TStringGrid
+      Left = 0
+      Top = 0
+      Width = 225
+      Height = 408
+      Align = alClient
+      ColCount = 3
+      RowCount = 2
+      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goEditing, goTabs]
+      TabOrder = 0
+    end
+    object Panel2: TPanel
+      Left = 0
+      Top = 408
+      Width = 225
+      Height = 80
+      Align = alBottom
+      TabOrder = 1
+      object Label1: TLabel
+        Left = 89
+        Top = 8
+        Width = 93
+        Height = 13
+        Caption = 'Number of Vertices:'
+      end
+      object lbl1: TLabel
+        Left = 16
+        Top = 8
+        Width = 22
+        Height = 13
+        Caption = 'Unit:'
+      end
+      object SpinEdit1: TSpinEdit
+        Left = 88
+        Top = 24
+        Width = 121
+        Height = 22
+        MaxValue = 1000
+        MinValue = 1
+        TabOrder = 0
+        Value = 1
+        OnChange = SpinEdit1Change
+      end
+      object btnCalcula: TButton
+        Left = 148
+        Top = 50
+        Width = 60
+        Height = 25
+        Hint = 'Calcula Dados Poligono'
+        Caption = 'Solve'
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 1
+        OnClick = btnCalculaClick
+      end
+      object edtUnit: TEdit
+        Left = 16
+        Top = 24
+        Width = 49
+        Height = 21
+        TabOrder = 2
+        Text = 'm'
+      end
+    end
+  end
+  object Panel3: TPanel
+    Left = 233
+    Top = 0
+    Width = 790
+    Height = 488
+    Align = alClient
+    TabOrder = 1
+    object Splitter2: TSplitter
+      Left = 1
+      Top = 406
+      Width = 788
+      Height = 5
+      Cursor = crVSplit
+      Align = alBottom
+      Color = clActiveBorder
+      ParentColor = False
+    end
+    object View: TPaintBox
+      Left = 1
+      Top = 31
+      Width = 788
+      Height = 375
+      Align = alClient
+      Color = clBlack
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clWhite
+      Font.Height = -8
+      Font.Name = 'Arial Narrow'
+      Font.Style = []
+      ParentColor = False
+      ParentFont = False
+      OnClick = ViewClick
+      OnDblClick = ViewDblClick
+      OnMouseDown = ViewMouseDown
+      OnMouseMove = ViewMouseMove
+      OnMouseUp = ViewMouseUp
+      OnPaint = ViewPaint
+    end
+    object memo: TMemo
+      Left = 1
+      Top = 411
+      Width = 788
+      Height = 76
+      Align = alBottom
+      ScrollBars = ssVertical
+      TabOrder = 0
+    end
+    object ControlBar1: TControlBar
+      Left = 1
+      Top = 1
+      Width = 788
+      Height = 30
+      Align = alTop
+      AutoSize = True
+      TabOrder = 1
+      object SpeedButton11: TSpeedButton
+        Left = 337
+        Top = 2
+        Width = 65
+        Height = 22
+        Hint = 'Coloca o CG em (0,0)'
+        Caption = 'CG: (0,0)'
+        ParentShowHint = False
+        ShowHint = True
+        OnClick = SpeedButton11Click
+      end
+      object Panel4: TPanel
+        Left = 95
+        Top = 2
+        Width = 229
+        Height = 22
+        AutoSize = True
+        BevelOuter = bvNone
+        TabOrder = 0
+        object SpeedButton3: TSpeedButton
+          Left = 155
+          Top = 0
+          Width = 23
+          Height = 22
+          Hint = 'Pan Baixo'
+          Glyph.Data = {
+            F6000000424DF600000000000000760000002800000010000000100000000100
+            0400000000008000000000000000000000001000000000000000000000000000
+            8000008000000080800080000000800080008080000080808000C0C0C0000000
+            FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00FFFFFFFFFFFF
+            FFFFFFFFFFF0FFFFFFFFFFFFFF000FFFFFFFFFFFF00000FFFFFFFFFF0000000F
+            FFFFFFF000000000FFFFFF00000000000FFFF0F000000000F0FFFFF000000000
+            FFFFFFF000000000FFFFFFF000000000FFFFFFF000000000FFFFFFF000000000
+            FFFFFFF000000000FFFFFFF000000000FFFFFFFFFFFFFFFFFFFF}
+          ParentShowHint = False
+          ShowHint = True
+          OnClick = SpeedButton3Click
+        end
+        object SpeedButton2: TSpeedButton
+          Left = 133
+          Top = 0
+          Width = 23
+          Height = 22
+          Hint = 'Pan Cima'
+          Glyph.Data = {
+            F6000000424DF600000000000000760000002800000010000000100000000100
+            0400000000008000000000000000000000001000000000000000000000000000
+            8000008000000080800080000000800080008080000080808000C0C0C0000000
+            FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00FFFFFFFFFFFF
+            FFFFFFFF000000000FFFFFFF000000000FFFFFFF000000000FFFFFFF00000000
+            0FFFFFFF000000000FFFFFFF000000000FFFFFFF000000000FFFFF0F00000000
+            0F0FFFF00000000000FFFFFF000000000FFFFFFFF0000000FFFFFFFFFF00000F
+            FFFFFFFFFFF000FFFFFFFFFFFFFF0FFFFFFFFFFFFFFFFFFFFFFF}
+          ParentShowHint = False
+          ShowHint = True
+          OnClick = SpeedButton2Click
+        end
+        object SpeedButton4: TSpeedButton
+          Left = 112
+          Top = 0
+          Width = 22
+          Height = 22
+          Hint = 'Pan Direito'
+          Glyph.Data = {
+            F6000000424DF600000000000000760000002800000010000000100000000100
+            0400000000008000000000000000000000001000000000000000000000000000
+            8000008000000080800080000000800080008080000080808000C0C0C0000000
+            FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00FFFFFFFFFFFF
+            FFFFFFFFFFFF0FFFFFFFFFFFFFFFF0FFFFFFF0000000000FFFFFF00000000000
+            FFFFF000000000000FFFF0000000000000FFF00000000000000FF00000000000
+            00FFF000000000000FFFF00000000000FFFFF0000000000FFFFFFFFFFFFFF0FF
+            FFFFFFFFFFFF0FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
+          Margin = 1
+          ParentShowHint = False
+          ShowHint = True
+          OnClick = SpeedButton4Click
+        end
+        object SpeedButton1: TSpeedButton
+          Left = 90
+          Top = 0
+          Width = 23
+          Height = 22
+          Hint = 'Pan Esquerdo'
+          Glyph.Data = {
+            F6000000424DF600000000000000760000002800000010000000100000000100
+            0400000000008000000000000000000000001000000000000000000000000000
+            8000008000000080800080000000800080008080000080808000C0C0C0000000
+            FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00FFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFF0FFFFFFFFFFFFFF0FFFFFFFFFFFFFF0000000
+            000FFFFF00000000000FFFF000000000000FFF0000000000000FF00000000000
+            000FFF0000000000000FFFF000000000000FFFFF00000000000FFFFFF0000000
+            000FFFFFFF0FFFFFFFFFFFFFFFF0FFFFFFFFFFFFFFFFFFFFFFFF}
+          Margin = 1
+          ParentShowHint = False
+          ShowHint = True
+          OnClick = SpeedButton1Click
+        end
+        object SpeedButton10: TSpeedButton
+          Left = 66
+          Top = 0
+          Width = 23
+          Height = 22
+          Hint = 'Zoom Conte'#250'do'
+          Glyph.Data = {
+            F6000000424DF600000000000000760000002800000010000000100000000100
+            0400000000008000000000000000000000001000000000000000000000000000
+            8000008000000080800080000000800080008080000080808000C0C0C0000000
+            FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00FFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFF00000000000000FF0FFFFFFFFFFFF0FF0F000FFFF00
+            0F0FF0F00FFFFFF00F0FF0F0F00FF00F0F0FF0FFFFF00FFFFF0FF0FFFFF00FFF
+            FF0FF0F0F00FF00F0F0FF0F00FFFFFF00F0FF0F000FFFF000F0FF0FFFFFFFFFF
+            FF0FF00000000000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
+          ParentShowHint = False
+          ShowHint = True
+          OnClick = SpeedButton10Click
+        end
+        object SpeedButton7: TSpeedButton
+          Left = 44
+          Top = 0
+          Width = 23
+          Height = 22
+          Hint = 'Escala 1:1'
+          Glyph.Data = {
+            F6000000424DF600000000000000760000002800000010000000100000000100
+            0400000000008000000000000000000000001000000000000000000000000000
+            8000008000000080800080000000800080008080000080808000C0C0C0000000
+            FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00FFFFFFFFFFFF
+            FFFFFFF00FFFFFFF00FFFFF00FFFFFFF00FFFFF00FFFFFFF00FFFFF00FFFFFFF
+            00FFFFF00FFFFFFF00FFFFF00FF00FFF00FFFFF00FF00FFF00FFFFF00FFFFFFF
+            00FFFFF00FFFFFFF00FFFFF00FF00FFF00FFF0000FF00F0000FFFF000FFFFFF0
+            00FFFFF00FFFFFFF00FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
+          Margin = 1
+          ParentShowHint = False
+          ShowHint = True
+          OnClick = SpeedButton7Click
+        end
+        object SpeedButton6: TSpeedButton
+          Left = 22
+          Top = 0
+          Width = 23
+          Height = 22
+          Hint = 'Zoom -'
+          Glyph.Data = {
+            F6000000424DF600000000000000760000002800000010000000100000000100
+            0400000000008000000000000000000000001000000000000000000000000000
+            8000008000000080800080000000800080008080000080808000C0C0C0000000
+            FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00FFFFFFFFFFFF
+            FFF0FFFFF000000FFF00FFFF0FFFFFF0F00FFFF0FFFFFFFF00FFFF0FFFFFFFFF
+            F0FFF0FFFFFFFFFFF0FFF0FFFFFFFFFFFF0FF0F0000000000F0FF0F000000000
+            0F0FF0FFFFFFFFFFFF0FF0FFFFFFFFFFF0FFFF0FFFFFFFFFF0FFFFF0FFFFFFFF
+            0FFFFFFF0FFFFFF0FFFFFFFFF000000FFFFFFFFFFFFFFFFFFFFF}
+          Margin = 1
+          ParentShowHint = False
+          ShowHint = True
+          OnClick = SpeedButton6Click
+        end
+        object SpeedButton5: TSpeedButton
+          Left = 0
+          Top = 0
+          Width = 23
+          Height = 22
+          Hint = 'Zoon +'
+          Glyph.Data = {
+            F6000000424DF600000000000000760000002800000010000000100000000100
+            0400000000008000000000000000000000001000000000000000000000000000
+            8000008000000080800080000000800080008080000080808000C0C0C0000000
+            FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00FFFFFFFFFFFF
+            FFF0FFFFF000000FFF00FFFF0FFFFFF0F00FFFF0FFF00FFF00FFFF0FFFF00FFF
+            F0FFF0FFFFF00FFFF0FFF0FFFFF00FFFFF0FF0F0000000000F0FF0F000000000
+            0F0FF0FFFFF00FFFFF0FF0FFFFF00FFFF0FFFF0FFFF00FFFF0FFFFF0FFF00FFF
+            0FFFFFFF0FFFFFF0FFFFFFFFF000000FFFFFFFFFFFFFFFFFFFFF}
+          Margin = 1
+          ParentShowHint = False
+          ShowHint = True
+          OnClick = SpeedButton5Click
+        end
+        object lblScale: TLabel
+          Left = 184
+          Top = 8
+          Width = 45
+          Height = 13
+          Caption = 'Scale:= 1'
+        end
+      end
+      object Panel5: TPanel
+        Left = 11
+        Top = 2
+        Width = 71
+        Height = 22
+        AutoSize = True
+        BevelOuter = bvNone
+        TabOrder = 1
+        object SpeedButton9: TSpeedButton
+          Left = 48
+          Top = 0
+          Width = 23
+          Height = 22
+          Hint = 'Grava Dados'
+          Glyph.Data = {
+            36030000424D3603000000000000360000002800000010000000100000000100
+            1800000000000003000000000000000000000000000000000000FFFFFF303030
+            B090908060606060606060606060606060606060606060606060606060606060
+            60A06060703030400000606060A06060800000A06060A06060A06060B09090CF
+            CFCFC0C0C0C0C0C0C0C0C0C0C0C0C0C0C0800000800000800000606060800000
+            800000A06060800000800000A06060DFDFDFC0C0C0C0C0C0C0C0C0C0C0C0C0C0
+            C0800000800000800000606060800000800000A06060800000800000A06060DF
+            DFDFC0C0C0C0C0C0C0C0C0C0C0C0C0C0C0800000800000800000606060800000
+            800000903030A06060A06060B09090CFCFCFC0C0C0C0C0C0C0C0C0C0C0C0B090
+            9080000080000080000060606080000080000080000080000080000080000080
+            0000800000800000800000800000800000800000800000800000606060800000
+            8000006000004000004000004000004000004000004000004000004000004000
+            006000008000008000006060608000008000007F7F7FFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF7F7F7F800000800000606060800000
+            8000007F7F7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FF7F7F7F8000008000006060608000008000007F7F7FFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF7F7F7F800000800000606060800000
+            8000007F7F7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FF7F7F7F8000008000006060608000008000007F7F7FFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF7F7F7F800000800000606060600000
+            6000007F7F7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FF7F7F7F800000800000606060400000AF6F6F3F7F7F7FFFFF7FFFFF7FFFFF7F
+            FFFF7FFFFF7FFFFF7FFFFF7FFFFF7FFFFF3F7F7F800000800000FFFFFF800000
+            800000007F7F00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FF
+            FF007F7F800000800000FFFFFF20000040000000000000000000000000000000
+            0000000000000000000000000000000000000000400000200000}
+          ParentShowHint = False
+          ShowHint = True
+          OnClick = SpeedButton9Click
+        end
+        object SpeedButton8: TSpeedButton
+          Left = 24
+          Top = 0
+          Width = 23
+          Height = 22
+          Hint = 'Abrir Arquivo'
+          Glyph.Data = {
+            36030000424D3603000000000000360000002800000010000000100000000100
+            1800000000000003000000000000000000000000000000000000FFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000000000000000000000000000
+            0000000000000000000000000000000000000000000000000000FFFFFF404040
+            30AFAF30AFAF30AFAF30AFAF30AFAF30AFAF30AFAF30AFAF30AFAF30AFAF30AF
+            AF30AFAF30AFAF004040FFFFFF70707060DFDF60DFDF60DFDF60DFDF60DFDF60
+            DFDF60DFDF60DFDF60DFDF60DFDF60DFDF60DFDF60DFDF002020FFFFFF70AFAF
+            60DFDF60DFDF60DFDF60DFDF60DFDF60DFDF60DFDF60DFDF60DFDF60DFDF60DF
+            DF60DFDF80BFBF00000020202050CFCF60DFDF60DFDF60DFDF60DFDF60DFDF60
+            DFDF60DFDF60DFDF60DFDF60DFDF60DFDF60DFDF508F8F00202040404060DFDF
+            60DFDF60DFDF60DFDF60DFDF60DFDF60DFDF60DFDF60DFDF60DFDF60DFDF60DF
+            DF60DFDF50505000404070707060DFDF60DFDF60DFDF60DFDF60DFDF60DFDF60
+            DFDF60DFDF60DFDF60DFDF60DFDF60DFDF60DFDF40404000404070AFAF60DFDF
+            60DFDF60DFDF60DFDF60DFDF60DFDF60DFDF60DFDF60DFDF60DFDF60DFDF60DF
+            DF50CFCF205F5F0040407FBFBFAFEFEFAFEFEFAFEFEFAFEFEFAFEFEFAFEFEFAF
+            EFEFAFEFEFAFEFEFAFEFEFAFEFEFAFEFEF8F8F8F508F8F004040202020707070
+            9FDFDF90CFCF90CFCF90CFCF90CFCF90CFCF90CFCF90CFCF90CFCF90CFCF90CF
+            CF90CFCF60DFDF004040FFFFFF404040AFEFEF60DFDF60DFDF60DFDF60DFDF60
+            DFDF60DFDF60DFDF60DFDF60DFDF60DFDF60DFDF60DFDF004040FFFFFF404040
+            AFEFEF60DFDF60DFDF60DFDF60DFDF60DFDF60DFDF8FCFCFBFBFBFBFBFBFBFBF
+            BFBFBFBFBFBFBF000000FFFFFFFFFFFF7F7F7F6FEFEF60DFDF60DFDF60DFDF60
+            DFDF80BFBF202020FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFF7F7F7FBFBFBFBFBFBFBFBFBFBFBFBF202020FFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
+          ParentShowHint = False
+          ShowHint = True
+          OnClick = SpeedButton8Click
+        end
+        object btnNew: TSpeedButton
+          Left = 0
+          Top = 0
+          Width = 23
+          Height = 22
+          Glyph.Data = {
+            16020000424D160200000000000076000000280000001A0000001A0000000100
+            040000000000A001000000000000000000001000000000000000000000000000
+            BF0000BF000000BFBF00BF000000BF00BF00BFBF0000C0C0C000808080000000
+            FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00777777777777
+            777777777777770A000477777777777777777777777777000000777777777777
+            7777777777777700000077777788888888888888777777000000777777888888
+            8888888877777700000077777444444444444488777777000000777774BFBFBF
+            BFBFB488777777000000777774FBFBFBFBFBF488777777000000777774BFBFBF
+            BFBFB488777777070707777774FBFBFBFBFBF488777777000000777774BFBFBF
+            BFBFB488777777070707777774FBFBFBFBFBF488777777000000777774BFBFBF
+            BFBFB488777777070707777774FBFBFBFBFBF488777777000000777774BFBFBF
+            BFBFB488777777070707777774FBFBFBFBFBF488777777000000777774BFBFBF
+            B444447777777707070777F77FFBFBFBF4FB4777777777000000777F7FBFBFBF
+            B4B477777777770404047777FFFBFBFBF447777777777700000077FFFFFFF444
+            44777777777777FFFBFF7777FFF7777777777777777777000000777F7F7F7777
+            77777777777777FBFFFB77777F77F77777777777777777000000777777777777
+            77777777777777FFFBFF77777777777777777777777777000000}
+          OnClick = btnNewClick
+        end
+      end
+      object pnl1: TPanel
+        Left = 415
+        Top = 2
+        Width = 90
+        Height = 22
+        TabOrder = 2
+        object lbl2: TLabel
+          Left = 16
+          Top = 0
+          Width = 16
+          Height = 13
+          Caption = 'Fix:'
+        end
+        object seFix: TSpinEdit
+          Left = 36
+          Top = 0
+          Width = 45
+          Height = 22
+          MaxValue = 16
+          MinValue = 0
+          TabOrder = 0
+          Value = 16
+          OnChange = seFixChange
+        end
+      end
+    end
+  end
+  object dlgSave: TSaveDialog
+    DefaultExt = 'pgp'
+    Filter = 'Perfil (Default)|*.pgp|Texto (Perfil)|*.txt'
+    FilterIndex = 0
+    Title = 'Gravar'
+    Left = 855
+    Top = 9
+  end
+  object dlgOpen: TOpenDialog
+    Filter = 'PGP (Default)|*.pgp|Texto (PGP format)|*.txt'
+    FilterIndex = 0
+    Left = 799
+    Top = 1
+  end
+  object MainMenu1: TMainMenu
+    Left = 281
+    Top = 64
+    object Arquivo1: TMenuItem
+      Caption = 'File'
+      object Abre1: TMenuItem
+        Caption = 'Open'
+        OnClick = Abre1Click
+      end
+      object Salva1: TMenuItem
+        Caption = 'Save'
+        OnClick = Salva1Click
+      end
+    end
+    object Vista1: TMenuItem
+      Caption = 'View'
+      object Zomm1: TMenuItem
+        Caption = 'Zomm +'
+        OnClick = Zomm1Click
+      end
+      object Zoom1: TMenuItem
+        Caption = 'Zoom-'
+        OnClick = Zoom1Click
+      end
+      object ZoomFit1: TMenuItem
+        Caption = 'Zoom Fit'
+        OnClick = ZoomFit1Click
+      end
+    end
+    object Sobre1: TMenuItem
+      Caption = 'About'
+      OnClick = Sobre1Click
+    end
+  end
+end
